@@ -1,3 +1,4 @@
+import { useState } from "react";
 // import Swiper core and required modules
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 
@@ -11,7 +12,18 @@ import "swiper/css/scrollbar";
 
 import categories from "./categoryList";
 import Category from "./Category";
-const Categories = () => {
+interface Props {
+  handleClicke: (categoryId: number) => void;
+}
+const Categories = ({handleClicke} : Props) => {
+   // State to keep track of the selected category ID
+   const [activeCategoryId, setActiveCategoryId] = useState<number>(1);
+
+   // Function to handle click and set active category
+   const handleClick = (categoryId: number) => {
+     setActiveCategoryId(categoryId); // Update the active category ID
+     handleClicke(categoryId); // Call the parent handler
+   };
   return <div className="w-full bg-yellow-400" dir="rtl">
      <Swiper className="p-3"
       // install Swiper modules
@@ -26,7 +38,10 @@ const Categories = () => {
     >
      {
 categories.map((category) => (
-    <SwiperSlide className= { category.id ==1 ? " bg-black rounded-lg" : ""}>
+    <SwiperSlide
+    onClick={() => handleClick(category.id)}
+    className={`rounded-lg ${category.id === activeCategoryId && "bg-black text-yellow-400" }`}
+    >
         <Category name={category.name} id={category.id} image={category.image} />
      </SwiperSlide>
 ))
